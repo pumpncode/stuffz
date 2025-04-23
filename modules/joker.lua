@@ -183,6 +183,9 @@ SMODS.Joker {
     rarity=2,
     pos = {x=1,y=3},
     atlas="Jokers",
+    loc_vars = function (self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS['m_lucky']
+    end,
     calculate = function (self, card, context)
         if context.cardarea == G.play and context.repetition and not context.repetition_only and context.other_card.lucky_trigger then
             return {
