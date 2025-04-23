@@ -35,7 +35,7 @@ return {
             j_stfz_promatter = {
                 name = "Promatter",
         text = {
-            "This {C:attention}Joker{} gives {X:mult,C:white}X#1#{} Mult",
+            "This Joker gives {X:mult,C:white}X#1#{} Mult",
             "if it has an{C:dark_edition} edition"
         }
             },
@@ -130,6 +130,13 @@ return {
                 text = {
                     "Adds half the {C:attention}total rank{}",
                     "of scored cards to Mult"
+                }
+            },
+            j_stfz_four_leaf_clover = {
+                name = "Four Leaf Clover",
+                text = {
+                    "When a {C:attention}Lucky{} card {C:green}successfully{}",
+                    "triggers, retrigger it"
                 }
             },
             j_stfz_censored_joker = {

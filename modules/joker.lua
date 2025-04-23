@@ -154,7 +154,7 @@ SMODS.Joker {
                 }
             else
                 return {
-                    extra = { focus = card, message = "Downgrade!" }
+                    extra = { focus = card, message = "Downgrade!", colour=G.C.MULT }
                 }
             end
         end
@@ -163,7 +163,7 @@ SMODS.Joker {
         if context.cardarea == G.play and context.individual and not context.other_card.debuff and SMODS.in_scoring(context.other_card, context.scoring_hand) and (context.other_card:is_suit("Clubs") or context.other_card:is_suit("Diamonds")) then
             card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.perclub
             return {
-                extra = { focus = card, message = localize("k_upgrade_ex") }
+                extra = { focus = card, message = localize("k_upgrade_ex"), colour=G.C.MULT }
             }
         end
 
@@ -171,6 +171,24 @@ SMODS.Joker {
         if context.joker_main then
             return {
                 Xmult = card.ability.extra.xmult
+            }
+        end
+    end
+}
+
+SMODS.Joker {
+    key='four_leaf_clover',
+    config = {extra={repetitions=1}},
+    cost=6,
+    rarity=2,
+    pos = {x=1,y=3},
+    atlas="Jokers",
+    calculate = function (self, card, context)
+        if context.cardarea == G.play and context.repetition and not context.repetition_only and context.other_card.lucky_trigger then
+            return {
+                message = localize("k_again_ex"),
+                repetitions = card.ability.extra.repetitions,
+                card = card
             }
         end
     end
@@ -387,7 +405,7 @@ SMODS.Joker {
         return { vars = { G.GAME.probabilities.normal, card.ability.extra.odds } }
     end,
     calculate = function(self, card, context)
-        if context.cardarea == G.play and context.repetition then
+        if context.cardarea == G.play and context.repetition and not context.repetition_only then
             if pseudorandom('instant_replay') < G.GAME.probabilities.normal / card.ability.extra.odds then
                 return {
                     message = localize("k_again_ex"),
@@ -412,7 +430,7 @@ SMODS.Joker {
     rarity = 1,
     pos = { x = 0, y = 3 },
     calculate = function(self, card, context)
-        if context.cardarea == G.play and context.individual and not context.other_card.debuff and (context.other_card:get_id() == 8) then
+        if context.cardarea == G.play and context.individual and not context.other_card.debuff and (context.other_card:get_id() == 8) and not context.blueprint then
             card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chipmod
             return {
                 extra = { focus = card, message = localize('k_upgrade_ex') },
