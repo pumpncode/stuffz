@@ -1,0 +1,10 @@
+{
+	"id": "Stuffz",
+	"name": "Stuffz",
+	"display_name": "Stuffz",
+	"author": ["Mini"],
+	"description": "Adds some jokers (with horrible art)",
+	"prefix": "stfz",
+	"main_file": "main.lua",
+	"version": "1.0.0"
+}
