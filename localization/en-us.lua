@@ -52,7 +52,7 @@ return {
                 name = "Starry Night",
                 text = {
                     "{X:mult,C:white}X#1#{} Mult, loses {X:mult,C:white}X#2#{} Mult",
-                    "each round, gains {X:mult,C:white}#3#{} Mult",
+                    "each round, gains {X:mult,C:white}X#3#{} Mult",
                     "per card with {V:1}#4#{} or",
                     "{V:2}#5#{} suit scored"
                 }
