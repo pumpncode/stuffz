@@ -4,72 +4,65 @@ return {
             j_stfz_water = {
                 name = 'Water',
                 text = {
-            '{X:mult,C:white}X#1#{} Mult, loses',
-            '{X:mult,C:white}X0.25{} Mult per hand played'
-                    }
+                    '{X:mult,C:white}X#1#{} Mult, loses',
+                    '{X:mult,C:white}X0.25{} Mult per hand played'
+                }
             },
             j_stfz_overjoyed = {
                 name = 'Overjoyed',
-        text = {
-            "{X:mult,C:white}X#1#{} Mult if",
-            "played hand only",
-            "contains {C:attention}face{} cards"
-        }
-            },
-            j_stfz_bigger_house = {
-                name = "Bigger House",
-        text = {
-            "+1 permanent {C:attention}Joker{} slot",
-            "every {C:attention}6 Full Houses{} played",
-            "{C:inactive}#1# remaining{}"
-        }
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult if",
+                    "played hand only",
+                    "contains {C:attention}face{} cards"
+                }
             },
             j_stfz_sad_face = {
                 name = "Sad Face",
-        text = {
-            "{C:white,X:mult}X#1#{} Mult if played",
-            "hand and hand don't",
-            "contain any {C:attention}face{} cards"
-        }
+                text = {
+                    "{C:chips}+#1#{} Chips if there are no",
+                    "{C:attention}face{} cards held in hand",
+                    "{C:inactive}(Currently {}{C:chips}+#2#{}{C:inactive} Chips)"
+                }
+            },
+            j_stfz_heed = {
+                name = "Vainglory",
+                text = {
+                    "{C:green}#1# in #2#{} cards are drawn {C:attention}face{}",
+                    "{C:attention}down{}, face down cards held",
+                    "in hand give {X:mult,C:white}X#3#{} Mult each"
+                }
+            },
+            j_stfz_slugfish = { 
+                name = "Slugfish",
+                text = {
+                    "If the {C:attention}first hand{} of round contains",
+                    "{C:attention}#1#{} or more cards, destroy all cards",
+                    "in played hand except for the leftmost",
+                    "and rightmost card"
+                }
             },
             j_stfz_promatter = {
                 name = "Promatter",
-        text = {
-            "This Joker gives {X:mult,C:white}X#1#{} Mult",
-            "if it has an{C:dark_edition} edition"
-        }
+                text = {
+                    "This Joker gives {X:mult,C:white}X#1#{} Mult",
+                    "if it has an{C:dark_edition} edition"
+                }
             },
             j_stfz_starry_night = {
                 name = "Starry Night",
-        text = {
-            "{X:mult,C:white}X#1#{} Mult, loses {X:mult,C:white}X#2#{} Mult",
-            "each round, gains",
-            "{X:mult,C:white}X#3#{} Mult per card",
-            "with {V:1}#4#{} or {V:2}#5#{} suit scored"
-        }
-            },
-            j_stfz_coin_flip = {
-                name = 'Coin Flip', 
-        text = {
-            "Gains {X:mult,C:white}X#1#{} Mult at end of round,",
-            "{C:green}#2# in #3#{} chance this card",
-            "is destroyed at end of round",
-            "{C:inactive}(Currently {}{X:mult,C:white}X#4#{}{C:inactive} Mult)"
-        }
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult, loses {X:mult,C:white}X#2#{} Mult",
+                    "each round, gains {X:mult,C:white}#3#{} Mult",
+                    "per card with {V:1}#4#{} or",
+                    "{V:2}#5#{} suit scored"
+                }
             },
             j_stfz_sunny_day = {
                 name = 'Sunny Day',
-        text = {
-            "{C:attention}Glass{} cards with {V:1}#1#{}",
-            "suit give an extra {X:mult,C:white}X#2#{} Mult"
-        }
-            },
-            j_stfz_sorcerer = {
-                name = "Sorcerer",
-        text = {
-            "{C:chips}+#1#{} Chips per {C:attention}consumable{} card owned",
-            "{C:inactive}(Currently {}{C:chips}+#2#{}{C:inactive} Chips)"
-        }
+                text = {
+                    "{C:attention}Glass{} cards with {V:1}#1#{}",
+                    "suit give an extra {X:mult,C:white}X#2#{} Mult"
+                }
             },
             j_stfz_big_joker = {
                 name = "Large Joker",
@@ -79,26 +72,11 @@ return {
                     "{C:inactive}(Currently {C:chips}+#2#{}{C:inactive} Chips)"
                 }
             },
-            j_stfz_jeffrey = {
-                name = "Jeffrey",
-                text = {
-                    "{X:mult,C:white}X#1#{} Mult per",
-                    '{C:attention}Queen{} in your deck',
-                    "{C:inactive}(Currently {X:mult,C:white}X#2#{} {C:inactive}Mult)"
-                }
-            },
-            j_stfz_mathurine = {
-                name = "Mathurine",
-                text = {
-                    "Reduce required chips of",
-                    '{C:attention}current blind{} by {C:attention}20%{}'
-                }
-            },
             j_stfz_debit_card = {
                 name = "Debit Card",
                 text = {
-                    "Create a {C:spectral}Spectral{} card if hand",
-                    "is played with {C:money}$0{} or less"
+                    "Create a random {C:spectral}Spectral{} card if",
+                    "hand is played with {C:money}$0{} or less"
                 }
             },
             j_stfz_i_love_you = {
@@ -151,8 +129,8 @@ return {
             j_stfz_instant_replay = {
                 name = "Instant Replay",
                 text = {
-                    "{C:green}#1# in #2#{} chance for scored",
-                    "cards to be retriggered"
+                    "{C:green}#1# in #2#{} cards are",
+                    "retriggered"
                 }
             }
         },
@@ -160,8 +138,8 @@ return {
             bl_stfz_the_leech = {
                 name = "The Leech",
                 text = {
-                "All enhanced cards",
-                "are debuffed"
+                    "All enhanced cards",
+                    "are debuffed"
                 }
             },
             bl_stfz_the_tree = {

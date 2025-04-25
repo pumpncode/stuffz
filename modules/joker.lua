@@ -12,6 +12,15 @@ function removeDuplicates(t)
     return result
 end
 
+function hasValue(t, v)
+    for _, i in t do
+        if i == v then
+            return true
+        end
+    end
+    return false
+end
+
 SMODS.Joker {
     key = "i_love_you",
     pos = { x = 6, y = 1 },
@@ -51,7 +60,7 @@ SMODS.Joker {
     rarity = 3,
     cost = 8,
     calculate = function(self, card, context)
-        if context.before and G.GAME.dollars < 0 then
+        if context.before and G.GAME.dollars <= 0 then
             card:juice_up(0.3, 0.4)
             SMODS.add_card({ set = "Spectral", area = G.consumeables })
         end
@@ -64,29 +73,7 @@ SMODS.Joker {
 
 
 
-SMODS.Joker {
-    key = 'sorcerer',
-    pos = { x = 1, y = 1 },
-    config = { extra = { chips = 0, chipmod = 5 } },
-    rarity = 1,
-    atlas = 'Jokers',
-    cost = 5,
-    blueprint_compat = true,
-    loc_vars = function(self, info_queue, center)
-        local success, result = pcall(function() return #G.consumeables.cards * center.ability.extra.chipmod end)
-        tempcalc = (success and result) or 0
-        return { vars = { center.ability.extra.chipmod, tempcalc } }
-    end,
-    calculate = function(self, card, context)
-        card.ability.extra.chips = #G.consumeables.cards * card.ability.extra.chipmod
 
-        if context.joker_main then
-            return {
-                chip = card.ability.extra.chips
-            }
-        end
-    end
-}
 
 SMODS.Joker {
     key = 'sunny_day',
@@ -109,16 +96,62 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = 'slugfish',
+    config = { extra = {min=3} },
+    blueprint_compat = false,
+    rarity = 3,
+    cost = 9,
+    atlas = "Jokers",
+    pos = { x = 3, y = 3 },
+    loc_vars = function (self, info_queue, card)
+        return {vars={card.ability.extra.min}}
+    end,
+    calculate = function(self, card, context)
+        if context.first_hand_drawn then
+            local _eval = function() return G.GAME.current_round.hands_played == 0 end
+            juice_card_until(card, _eval, true)
+        end
 
+        if context.destroy_card and context.cardarea == G.play and #context.full_hand >= card.ability.extra.min and G.GAME.current_round.hands_played == 0 then
+            if context.destroy_card ~= context.full_hand[1] and context.destroy_card ~= context.full_hand[#context.full_hand] then
+                return {
+                    remove = true
+                }
+            end
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'heed',
+    config = { extra = { odds = 7, xmult = 1.5 } },
+    blueprint_compat = false,
+    pos = { x = 2, y = 3 },
+    rarity = 2,
+    cost = 6,
+    atlas = "Jokers",
+    loc_vars = function(self, info_queue, card)
+        return { vars = { G.GAME.probabilities.normal, card.ability.extra.odds, card.ability.extra.xmult } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.hand and (not context.end_of_round) and context.other_card.facing == "back" then
+            return {
+                Xmult = card.ability.extra.xmult,
+                card = card
+            }
+        end
+    end
+}
 
 SMODS.Joker {
     key = 'starry_night',
     config = { extra = {
         xmult = 1.5,
-        perhand = 0.15,
+        perhand = 0.2,
         perclub = 0.05
     } },
-    blueprint_compat = false,
+    blueprint_compat = true,
     rarity = 2,
     cost = 6,
     pos = { x = 5, y = 0 },
@@ -154,16 +187,16 @@ SMODS.Joker {
                 }
             else
                 return {
-                    extra = { focus = card, message = "Downgrade!", colour=G.C.MULT }
+                    extra = { focus = card, message = "Downgrade!", colour = G.C.MULT }
                 }
             end
         end
 
 
-        if context.cardarea == G.play and context.individual and not context.other_card.debuff and SMODS.in_scoring(context.other_card, context.scoring_hand) and (context.other_card:is_suit("Clubs") or context.other_card:is_suit("Diamonds")) then
+        if context.cardarea == G.play and context.individual and not context.other_card.debuff and SMODS.in_scoring(context.other_card, context.scoring_hand) and (context.other_card:is_suit("Clubs") or context.other_card:is_suit("Diamonds")) and not context.blueprint then
             card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.perclub
             return {
-                extra = { focus = card, message = localize("k_upgrade_ex"), colour=G.C.MULT }
+                extra = { focus = card, message = localize("k_upgrade_ex"), colour = G.C.MULT }
             }
         end
 
@@ -177,16 +210,17 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key='four_leaf_clover',
-    config = {extra={repetitions=1}},
-    cost=6,
-    rarity=2,
-    pos = {x=1,y=3},
-    atlas="Jokers",
-    loc_vars = function (self, info_queue, card)
+    key = 'four_leaf_clover',
+    config = { extra = { repetitions = 1 } },
+    cost = 6,
+    rarity = 2,
+    pos = { x = 1, y = 3 },
+    blueprint_compat = true,
+    atlas = "Jokers",
+    loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS['m_lucky']
     end,
-    calculate = function (self, card, context)
+    calculate = function(self, card, context)
         if context.cardarea == G.play and context.repetition and not context.repetition_only and context.other_card.lucky_trigger then
             return {
                 message = localize("k_again_ex"),
@@ -227,28 +261,30 @@ SMODS.Joker {
     pos = { x = 3, y = 0 },
     cost = 4,
 
-    config = { extra = { xmult = 2 } },
+    config = { extra = { chipmod=7,chips=0 } },
     loc_vars = function(self, info_queue, center)
-        return { vars = { center.ability.extra.xmult } }
+        return { vars = { center.ability.extra.chipmod, center.ability.extra.chips} }
     end,
     calculate = function(self, card, context)
-        if context.joker_main then
-            trigger_sad_face = true
-            for index, item in ipairs(G.play.cards) do
-                if item:is_face() then
-                    trigger_sad_face = false
+        if context.before and not context.blueprint then
+            local trigger = true
+            for _, playing_card in ipairs(G.hand.cards) do
+                if playing_card:is_face() then
+                    trigger = false
                 end
-            end
-            for index, item in ipairs(G.hand.cards) do
-                if item:is_face() then
-                    trigger_sad_face = false
-                end
-            end
-            if trigger_sad_face then
+            end 
+            if trigger then
+                card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chipmod
                 return {
-                    Xmult = card.ability.extra.xmult
+                    message = localize('k_upgrade_ex')
                 }
             end
+        end
+
+        if context.joker_main and card.ability.extra.chips > 0 then
+            return {
+                chips=card.ability.extra.chips
+            }
         end
     end
 }
@@ -384,17 +420,6 @@ SMODS.Joker {
 
 
 
-SMODS.Joker {
-    key = 'censored_joker',
-    cost = 5,
-    atlas = "Jokers",
-    config = { extra = { odds = 2 } },
-    rarity = 1,
-    pos = { x = 5, y = 2 },
-    loc_vars = function(self, info_queue, card)
-        return { vars = { G.GAME.probabilities.normal, card.ability.extra.odds } }
-    end
-}
 
 SMODS.Joker {
     key = 'instant_replay',
@@ -444,20 +469,22 @@ SMODS.Joker {
 
         if context.joker_main then
             return {
-                chip = card.ability.extra.chips,
+                chips = card.ability.extra.chips,
                 colour = G.C.CHIPS
             }
         end
     end
 }
 
-isfaceref = Card.is_face
-function Card:is_face()
-    local ref = isfaceref(self)
-    if next(SMODS.find_card('j_stfz_censored_joker')) then
-        if pseudorandom("censored_joker") < G.GAME.probabilities.normal / 2 then
+
+local stayflippedref = Blind.stay_flipped
+function Blind.stay_flipped(self, area, card)
+    if area == G.hand then
+        local _, heed = next(SMODS.find_card('j_stfz_heed'))
+        if heed and pseudorandom('heed') < G.GAME.probabilities.normal / heed.ability.extra.odds then
             return true
         end
     end
-    return ref
+
+    return stayflippedref(self, area, card)
 end
