@@ -19,7 +19,7 @@ return {
             j_stfz_sad_face = {
                 name = "Sad Face",
                 text = {
-                    "{C:chips}+#1#{} Chips if there are no",
+                    "Gains {C:chips}+#1#{} Chips if there are no",
                     "{C:attention}face{} cards held in hand",
                     "{C:inactive}(Currently {}{C:chips}+#2#{}{C:inactive} Chips)"
                 }
