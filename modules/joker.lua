@@ -148,7 +148,7 @@ SMODS.Joker {
     key = 'starry_night',
     config = { extra = {
         xmult = 1.5,
-        perhand = 0.2,
+        perhand = 0.15,
         perclub = 0.05
     } },
     blueprint_compat = true,
