@@ -110,22 +110,6 @@ return {
                     "of scored cards to Mult"
                 }
             },
-            j_stfz_four_leaf_clover = {
-                name = "Four Leaf Clover",
-                text = {
-                    "When a {C:attention}Lucky{} card {C:green}successfully{}",
-                    "triggers, retrigger it"
-                }
-            },
-            j_stfz_censored_joker = {
-                name = "Censored Joker",
-                text = {
-                    "All {C:attention}non-face{} cards ",
-                    "have a {C:green}#1# in #2#{}",
-                    "chance of being",
-                    "considered a {C:attention}face{} card"
-                }
-            },
             j_stfz_instant_replay = {
                 name = "Instant Replay",
                 text = {
