@@ -112,9 +112,8 @@ SMODS.Joker {
             local _eval = function() return G.GAME.current_round.hands_played == 0 end
             juice_card_until(card, _eval, true)
         end
-
-        if context.destroy_card and context.cardarea == G.play and #context.full_hand >= card.ability.extra.min and G.GAME.current_round.hands_played == 0 then
-            if context.destroy_card ~= context.full_hand[1] and context.destroy_card ~= context.full_hand[#context.full_hand] then
+        if context.destroy_card and (context.cardarea == G.play or context.cardarea == 'unscored') and #context.full_hand >= card.ability.extra.min and G.GAME.current_round.hands_played == 0 then
+            if (context.destroy_card ~= context.full_hand[1]) and (context.destroy_card ~= context.full_hand[#context.full_hand]) then
                 return {
                     remove = true
                 }
@@ -148,7 +147,7 @@ SMODS.Joker {
     key = 'starry_night',
     config = { extra = {
         xmult = 1.5,
-        perhand = 0.2,
+        perhand = 0.15,
         perclub = 0.05
     } },
     blueprint_compat = true,
@@ -209,27 +208,6 @@ SMODS.Joker {
     end
 }
 
-SMODS.Joker {
-    key = 'four_leaf_clover',
-    config = { extra = { repetitions = 1 } },
-    cost = 6,
-    rarity = 2,
-    pos = { x = 1, y = 3 },
-    blueprint_compat = true,
-    atlas = "Jokers",
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS['m_lucky']
-    end,
-    calculate = function(self, card, context)
-        if context.cardarea == G.play and context.repetition and not context.repetition_only and context.other_card.lucky_trigger then
-            return {
-                message = localize("k_again_ex"),
-                repetitions = card.ability.extra.repetitions,
-                card = card
-            }
-        end
-    end
-}
 
 
 SMODS.Joker {
@@ -328,15 +306,16 @@ SMODS.Joker {
     rarity = 1,
     pos = { x = 0, y = 0 },
     config = { extra = {
-        xmult = 2
+        xmult = 2, xmultmod=0.25
     } },
     loc_vars = function(self, info_queue, center)
         return { vars = { center.ability.extra.xmult } }
     end,
     calculate = function(self, card, context)
-        if context.after then
-            card.ability.extra.xmult = card.ability.extra.xmult - 0.25
-            if card.ability.extra.xmult < 1.01 then
+
+
+        if context.cardarea == G.jokers and context.after then
+            if card.ability.extra.xmult - card.ability.extra.xmultmod <= 0 then
                 play_sound('tarot1')
                 card.T.r = -0.2
                 card:juice_up(0.3, 0.4)
@@ -357,13 +336,14 @@ SMODS.Joker {
                 return {
                     message = "Drunk!"
                 }
+            else
+                card.ability.extra.xmult = card.ability.extra.xmult - card.ability.extra.xmultmod
+                return {
+                    Xmult=card.ability.extra.xmult
+                }
             end
         end
-        if context.joker_main then
-            return {
-                Xmult = card.ability.extra.xmult
-            }
-        end
+
     end
 }
 
