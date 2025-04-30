@@ -1,3 +1,17 @@
+function round(n)
+    return math.floor(n + 0.5)
+end
+
+function random_consumeable_type(seed)
+    local types = {}
+
+    for _, i in pairs(SMODS.ConsumableTypes) do
+        types[#types + 1] = i
+    end
+
+    return pseudorandom_element(types, pseudoseed(seed))
+end
+
 function removeDuplicates(t)
     local seen = {}
     local result = {}
@@ -42,10 +56,12 @@ SMODS.Joker {
                 end
             end
             if trigger then
-                local n_card = create_card(nil, G.consumeables, nil, nil, nil, nil, 'c_lovers')
-                n_card:add_to_deck()
-                G.consumeables:emplace(n_card)
-                G.GAME.consumeable_buffer = 0
+                if #G.consumeables.cards ~= G.consumeables.config.card_limit then
+                    local n_card = create_card(nil, G.consumeables, nil, nil, nil, nil, 'c_lovers')
+                    n_card:add_to_deck()
+                    G.consumeables:emplace(n_card)
+                    G.GAME.consumeable_buffer = 0
+                end
             end
         end
     end
@@ -62,13 +78,34 @@ SMODS.Joker {
     calculate = function(self, card, context)
         if context.before and G.GAME.dollars <= 0 then
             card:juice_up(0.3, 0.4)
-            SMODS.add_card({ set = "Spectral", area = G.consumeables })
+            if #G.consumeables.cards ~= G.consumeables.config.card_limit then
+                SMODS.add_card({ set = "Spectral", area = G.consumeables })
+            end
         end
     end
 }
 
 
-
+SMODS.Joker {
+    key = 'draw_two',
+    config = { extra = { ctd = 2 } },
+    blueprint_compat = true,
+    cost = 6,
+    atlas = "Jokers",
+    rarity = 2,
+    pos = { y = 3, x = 5 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.ctd } }
+    end,
+    calculate = function(self, card, context)
+        if context.selling_self then
+            for i = 1, math.min(card.ability.extra.ctd, G.consumeables.config.card_limit - #G.consumeables.cards) do
+                local type = random_consumeable_type("draw_two").key
+                SMODS.add_card({ set = type, area = G.consumeables })
+            end
+        end
+    end
+}
 
 
 
@@ -98,14 +135,14 @@ SMODS.Joker {
 
 SMODS.Joker {
     key = 'slugfish',
-    config = { extra = {min=3} },
+    config = { extra = { min = 3 } },
     blueprint_compat = false,
     rarity = 3,
     cost = 9,
     atlas = "Jokers",
     pos = { x = 3, y = 3 },
-    loc_vars = function (self, info_queue, card)
-        return {vars={card.ability.extra.min}}
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.min } }
     end,
     calculate = function(self, card, context)
         if context.first_hand_drawn then
@@ -155,6 +192,7 @@ SMODS.Joker {
     cost = 6,
     pos = { x = 5, y = 0 },
     atlas = "Jokers",
+    eternal_compat=false,
     loc_vars = function(self, info_queue, center)
         return {
             vars = { center.ability.extra.xmult, center.ability.extra.perhand, center.ability.extra.perclub, localize("Clubs", 'suits_singular'), localize("Diamonds", 'suits_singular'), colours = { G.C.SUITS["Clubs"], G.C.SUITS["Diamonds"] } }
@@ -239,9 +277,9 @@ SMODS.Joker {
     pos = { x = 3, y = 0 },
     cost = 4,
 
-    config = { extra = { chipmod=7,chips=0 } },
+    config = { extra = { chipmod = 7, chips = 0 } },
     loc_vars = function(self, info_queue, center)
-        return { vars = { center.ability.extra.chipmod, center.ability.extra.chips} }
+        return { vars = { center.ability.extra.chipmod, center.ability.extra.chips } }
     end,
     calculate = function(self, card, context)
         if context.before and not context.blueprint then
@@ -250,7 +288,7 @@ SMODS.Joker {
                 if playing_card:is_face() then
                     trigger = false
                 end
-            end 
+            end
             if trigger then
                 card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chipmod
                 return {
@@ -261,11 +299,12 @@ SMODS.Joker {
 
         if context.joker_main and card.ability.extra.chips > 0 then
             return {
-                chips=card.ability.extra.chips
+                chips = card.ability.extra.chips
             }
         end
     end
 }
+
 
 
 SMODS.Joker {
@@ -301,21 +340,27 @@ SMODS.Joker {
 SMODS.Joker {
     key = 'water',
     blueprint_compat = true,
+    eternal_compat=false,
     atlas = 'Jokers',
     cost = 4,
     rarity = 1,
     pos = { x = 0, y = 0 },
     config = { extra = {
-        xmult = 2, xmultmod=0.25
+        xmult = 2, xmultmod = 0.25
     } },
     loc_vars = function(self, info_queue, center)
         return { vars = { center.ability.extra.xmult } }
     end,
     calculate = function(self, card, context)
+        if context.joker_main then
+            return {
+                Xmult = card.ability.extra.xmult
+            }
+        end
 
 
-        if context.cardarea == G.jokers and context.after then
-            if card.ability.extra.xmult - card.ability.extra.xmultmod <= 0 then
+        if context.cardarea == G.jokers and context.after and not context.blueprint then
+            if (card.ability.extra.xmult - card.ability.extra.xmultmod <= 1.1) then
                 play_sound('tarot1')
                 card.T.r = -0.2
                 card:juice_up(0.3, 0.4)
@@ -339,11 +384,11 @@ SMODS.Joker {
             else
                 card.ability.extra.xmult = card.ability.extra.xmult - card.ability.extra.xmultmod
                 return {
-                    Xmult=card.ability.extra.xmult
+                    message = localize { type = 'variable', key = 'a_mult_minus', vars = { card.ability.extra.xmultmod } },
+                    colour = G.C.MULT
                 }
             end
         end
-
     end
 }
 
@@ -361,7 +406,7 @@ SMODS.Joker {
             for _, played_card in ipairs(context.scoring_hand) do
                 sum = sum + played_card.base.nominal
             end
-            sum = math.floor(sum / 2)
+            sum = round(sum / 2)
             if sum > 0 then
                 return {
                     mult = sum
@@ -468,3 +513,25 @@ function Blind.stay_flipped(self, area, card)
 
     return stayflippedref(self, area, card)
 end
+
+SMODS.Joker {
+    key = 'price_tag',
+    config = { extra = { new_cost = 5 } },
+    pos = { x = 4, y = 3 },
+    atlas = "Jokers",
+    cost = 5,
+    rarity = 2,
+    blueprint_compat = false,
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.new_cost } }
+    end,
+    calculate = function(self, card, context)
+        if context.starting_shop or context.reroll_shop then
+            for _, shop_card in ipairs(G.shop_jokers.cards) do
+                if shop_card.cost > card.ability.extra.new_cost then
+                    shop_card.cost = card.ability.extra.new_cost
+                end
+            end
+        end
+    end
+}
