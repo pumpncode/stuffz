@@ -76,7 +76,15 @@ return {
                 name = "Debit Card",
                 text = {
                     "Create a random {C:spectral}Spectral{} card if",
-                    "hand is played with {C:money}$0{} or less"
+                    "hand is played with {C:money}$0{} or less",
+                    "{C:inactive}(Must have room)"
+                }
+            },
+            j_stfz_price_tag = {
+                name = "Price Tag",
+                text = {
+                    "Cards in the {C:attention}shop{}",
+                    "cost {C:money}$#1#{} at max"
                 }
             },
             j_stfz_i_love_you = {
@@ -84,16 +92,17 @@ return {
                 text = {
                     "If played hand contains a {C:attention}Flush{}",
                     "and a {V:1}#1#{} card, create",
-                    "a {C:tarot}Lovers{} tarot card"
+                    "a {C:tarot}Lovers{} tarot card",
+                    "{C:inactive}(Must have room)"
                 }
             },
-            j_stfz_price_tag = {
-                name = "Price Tag",
+            j_stfz_draw_two = {
+                name = "Draw Two",
                 text = {
-                    "Cards bought from the {C:attention}shop{} have",
-                    "a {C:green}#1# in #2#{} chance to be discounted by {C:attention}75%{},",
-                    "otherwise its cost is {C:attention}doubled{}",
-                    "{s:0.8}(doesn't apply to vouchers and packs){}"
+                    "Sell this card to",
+                    "create {C:attention}#1#{} random",
+                    "consumables",
+                    "{C:inactive}(Must have room)"
                 }
             },
             j_stfz_inverted_joker = {
