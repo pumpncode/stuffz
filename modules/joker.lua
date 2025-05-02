@@ -161,10 +161,10 @@ SMODS.Joker {
             vars = { card.ability.extra.xmult }
         }
     end,
-    calculate = function (self, card, context)
+    calculate = function(self, card, context)
         if context.joker_main and not G.GAME.blind.boss then
             return {
-                Xmult=card.ability.extra.xmult
+                Xmult = card.ability.extra.xmult
             }
         end
     end
@@ -184,7 +184,7 @@ SMODS.Joker {
         }
     end,
     calculate = function(self, card, context)
-        if context.end_of_round and (not context.repetition) and (context.game_over == false) then
+        if context.ending_shop then
             if pseudorandom('doombringer') < G.GAME.probabilities.normal / card.ability.extra.odds then
                 add_tag(Tag(random_tag_thing('doombringer')))
                 play_sound('generic1', 0.9 + math.random() * 0.1, 0.8)
@@ -210,7 +210,7 @@ SMODS.Joker {
         return { vars = { G.GAME.probabilities.normal, card.ability.extra.odds, card.ability.extra.mult } }
     end,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.hand and (not context.end_of_round) and context.other_card.facing == "front" then
+        if context.individual and context.cardarea == G.hand and (not context.end_of_round) and (context.other_card.facing == "front") and (not context.other_card.debuff) then
             return {
                 mult = card.ability.extra.mult,
                 card = card

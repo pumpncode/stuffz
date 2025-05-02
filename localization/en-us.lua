@@ -32,7 +32,7 @@ return {
                     "in hand give {X:mult,C:white}X#3#{} Mult each"
                 }
             },
-            j_stfz_slugfish = { 
+            j_stfz_slugfish = {
                 name = "Slugfish",
                 text = {
                     "If the {C:attention}first hand{} of round contains",
@@ -51,10 +51,9 @@ return {
             j_stfz_starry_night = {
                 name = "Starry Night",
                 text = {
-                    "{X:mult,C:white}X#1#{} Mult, loses {X:mult,C:white}X#2#{} Mult",
-                    "each round, gains {X:mult,C:white}X#3#{} Mult",
-                    "per card with {V:1}#4#{} or",
-                    "{V:2}#5#{} suit scored"
+                    '{X:mult,C:white}X#1#{} Mult, loses {X:mult,C:white}X#2#{} Mult each',
+                    'round, gains {X:mult,C:white}X#3#{} Mult per card',
+                    'with {V:1}#4#{} or {V:2}#5#{} suit scored'
                 }
             },
             j_stfz_sunny_day = {
@@ -90,10 +89,10 @@ return {
             j_stfz_i_love_you = {
                 name = "I Love You",
                 text = {
-                    "If played hand contains a {C:attention}Flush{}",
-                    "and a {V:1}#1#{} card, create",
-                    "a {C:tarot}Lovers{} tarot card",
-                    "{C:inactive}(Must have room)"
+                    'If played hand contains a',
+                    '{C:attention}Flush{} and a {V:1}#1#{} card, create',
+                    'a {C:tarot}Lovers{} tarot card',
+                    '{C:inactive}(Must have room){}'
                 }
             },
             j_stfz_slight = {
@@ -110,7 +109,7 @@ return {
                 text = {
                     "{C:green}#1# in #2#{} chance to",
                     "create a random {C:attention}tag{}",
-                    "at end of round"
+                    "at end of {C:attention}shop{}"
                 }
             },
             j_stfz_dozer = {
@@ -140,8 +139,8 @@ return {
             j_stfz_inverted_joker = {
                 name = "Inverted Joker",
                 text = {
-                    "{C:mult}+#1#{} Mult if played hand contains",
-                    "exactly {C:attention}#2#{} different suits"
+                    '{C:mult}+#1#{} Mult if played hand contains',
+                    'exactly {C:attention}#2#{} different suits'
                 }
             },
             j_stfz_nerdy_joker = {
