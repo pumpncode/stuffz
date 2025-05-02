@@ -6,5 +6,10 @@
 	"description": "Adds some jokers (with horrible art)",
 	"prefix": "stfz",
 	"main_file": "main.lua",
-	"version": "1.0.0"
+	"version": "1.1.0",
+	"badge_colour": "67a7c9",
+	"dependencies": [
+		"Steamodded (>=1.0.0~BETA-0321a)", 
+		"Lovely (*)", 
+		"Balatro (>=1.0.1o)"]
 }

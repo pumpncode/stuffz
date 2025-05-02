@@ -13,3 +13,10 @@ SMODS.Atlas {
     atlas_table = "ANIMATION_ATLAS",
     frames = 21
 }
+
+SMODS.Atlas({
+    key = "modicon",
+    path = "icon.png",
+    px = 32,
+    py = 32
+  })

@@ -96,6 +96,38 @@ return {
                     "{C:inactive}(Must have room)"
                 }
             },
+            j_stfz_slight = {
+                name = "Slight",
+                text = {
+                    "{C:green}#1# in #2#{} cards are",
+                    "drawn {C:attention}face down{}, face",
+                    "up cards held in hand",
+                    "give {C:mult}+#3#{} Mult each"
+                }
+            },
+            j_stfz_doombringer = {
+                name = "Doombringer",
+                text = {
+                    "{C:green}#1# in #2#{} chance to",
+                    "create a random {C:attention}tag{}",
+                    "at end of round"
+                }
+            },
+            j_stfz_dozer = {
+                name = "Dozer",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult in {C:attention}Small Blind{}",
+                    "and {C:attention}Big Blind{}"
+                }
+            },
+            j_stfz_magic_8_ball = {
+                name = "Magical 8 Ball",
+                text = {
+                    "Retrigger each",
+                    "played {C:attention}8{} {C:attention}#1#{} times",
+                    "when scored"
+                }
+            },
             j_stfz_draw_two = {
                 name = "Draw Two",
                 text = {
