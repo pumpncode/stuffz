@@ -19,7 +19,7 @@ SMODS.Mods.Stuffz.credits_tab = function()
 					{
 						n = G.UIT.T,
 						config = {
-							text = "Owner - Mini\nArtists - QUAEZAR & Mini\nDevelopers - Mini",
+							text = "Owner - Mini\nArtists - QUAEZAR (Overjoyed) & Mini\nDevelopers - Mini",
 							shadow = true,
 							scale = 0.5,
 							colour = G.C.UI.TEXT_LIGHT,

@@ -2,6 +2,21 @@ function round(n)
     return math.floor(n + 0.5)
 end
 
+function random_tag_thing(seed)
+    local t = pseudorandom_element(G.P_CENTER_POOLS.Tag, pseudoseed(seed))
+    if t.key == 'tag_orbital' then
+        local hands = {}
+        for k, hand in pairs(G.GAME.hands) do
+            if hand.visible then
+                hands[#hands + 1] = hand
+            end
+        end
+
+        t.ability.orbital_hand = pseudorandom_element(hands, pseudoseed(seed .. '_orbital'))
+    end
+    return t.key
+end
+
 function random_consumeable_type(seed)
     local types = {}
 
@@ -134,27 +149,72 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = 'slugfish',
-    config = { extra = { min = 3 } },
-    blueprint_compat = false,
-    rarity = 3,
-    cost = 9,
+    key = 'dozer',
+    config = { extra = { xmult = 2 } },
+    rarity = 1,
+    cost = 5,
     atlas = "Jokers",
-    pos = { x = 3, y = 3 },
+    pos = { x = 4, y = 4 },
+    blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.min } }
+        return {
+            vars = { card.ability.extra.xmult }
+        }
     end,
     calculate = function(self, card, context)
-        if context.first_hand_drawn then
-            local _eval = function() return G.GAME.current_round.hands_played == 0 end
-            juice_card_until(card, _eval, true)
+        if context.joker_main and not G.GAME.blind.boss then
+            return {
+                Xmult = card.ability.extra.xmult
+            }
         end
-        if context.destroy_card and (context.cardarea == G.play or context.cardarea == 'unscored') and #context.full_hand >= card.ability.extra.min and G.GAME.current_round.hands_played == 0 then
-            if (context.destroy_card ~= context.full_hand[1]) and (context.destroy_card ~= context.full_hand[#context.full_hand]) then
+    end
+}
+
+SMODS.Joker {
+    key = 'doombringer',
+    config = { extra = { odds = 2 } },
+    blueprint_compat = true,
+    rarity = 1,
+    cost = 5,
+    atlas = "Jokers",
+    pos = { x = 3, y = 4 },
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = { G.GAME.probabilities.normal, card.ability.extra.odds }
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.ending_shop then
+            if pseudorandom('doombringer') < G.GAME.probabilities.normal / card.ability.extra.odds then
+                add_tag(Tag(random_tag_thing('doombringer')))
+                play_sound('generic1', 0.9 + math.random() * 0.1, 0.8)
+                play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
                 return {
-                    remove = true
+                    message = "AAAH!!"
                 }
             end
+        end
+    end
+
+}
+
+SMODS.Joker {
+    key = 'slight',
+    config = { extra = { odds = 7, mult = 6 } },
+    blueprint_compat = true,
+    rarity = 2,
+    cost = 7,
+    atlas = "Jokers",
+    pos = { x = 0, y = 4 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { G.GAME.probabilities.normal, card.ability.extra.odds, card.ability.extra.mult } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.hand and (not context.end_of_round) and (context.other_card.facing == "front") and (not context.other_card.debuff) then
+            return {
+                mult = card.ability.extra.mult,
+                card = card
+            }
         end
     end
 }
@@ -162,10 +222,10 @@ SMODS.Joker {
 SMODS.Joker {
     key = 'heed',
     config = { extra = { odds = 7, xmult = 1.5 } },
-    blueprint_compat = false,
+    blueprint_compat = true,
     pos = { x = 2, y = 3 },
     rarity = 2,
-    cost = 6,
+    cost = 7,
     atlas = "Jokers",
     loc_vars = function(self, info_queue, card)
         return { vars = { G.GAME.probabilities.normal, card.ability.extra.odds, card.ability.extra.xmult } }
@@ -176,6 +236,30 @@ SMODS.Joker {
                 Xmult = card.ability.extra.xmult,
                 card = card
             }
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'magic_8_ball',
+    config = { extra = { repetitions = 2 } },
+    pos = { y = 4, x = 1 },
+    soul_pos = { y = 4, x = 2 },
+    cost = 6,
+    rarity = 2,
+    atlas = "Jokers",
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.repetitions } }
+    end,
+    calculate = function(self, card, context)
+        if context.cardarea == G.play and context.repetition and not context.repetition_only then
+            if context.other_card:get_id() == 8 then
+                return {
+                    message = localize("k_again_ex"),
+                    repetitions = card.ability.extra.repetitions,
+                    card = card
+                }
+            end
         end
     end
 }
@@ -192,7 +276,7 @@ SMODS.Joker {
     cost = 6,
     pos = { x = 5, y = 0 },
     atlas = "Jokers",
-    eternal_compat=false,
+    eternal_compat = false,
     loc_vars = function(self, info_queue, center)
         return {
             vars = { center.ability.extra.xmult, center.ability.extra.perhand, center.ability.extra.perclub, localize("Clubs", 'suits_singular'), localize("Diamonds", 'suits_singular'), colours = { G.C.SUITS["Clubs"], G.C.SUITS["Diamonds"] } }
@@ -340,7 +424,7 @@ SMODS.Joker {
 SMODS.Joker {
     key = 'water',
     blueprint_compat = true,
-    eternal_compat=false,
+    eternal_compat = false,
     atlas = 'Jokers',
     cost = 4,
     rarity = 1,
@@ -384,7 +468,7 @@ SMODS.Joker {
             else
                 card.ability.extra.xmult = card.ability.extra.xmult - card.ability.extra.xmultmod
                 return {
-                    message = localize { type = 'variable', key = 'a_mult_minus', vars = { card.ability.extra.xmultmod } },
+                    message = localize { type = 'variable', key = 'a_xmult_minus', vars = { card.ability.extra.xmultmod } },
                     colour = G.C.MULT
                 }
             end
@@ -506,7 +590,11 @@ local stayflippedref = Blind.stay_flipped
 function Blind.stay_flipped(self, area, card)
     if area == G.hand then
         local _, heed = next(SMODS.find_card('j_stfz_heed'))
+        local _, slight = next(SMODS.find_card('j_stfz_slight'))
         if heed and pseudorandom('heed') < G.GAME.probabilities.normal / heed.ability.extra.odds then
+            return true
+        end
+        if slight and pseudorandom('heed') < G.GAME.probabilities.normal / slight.ability.extra.odds then
             return true
         end
     end
