@@ -1,6 +1,6 @@
 SMODS.Mods.Stuffz.credits_tab = function()
-    return {
-        n = G.UIT.ROOT,
+	return {
+		n = G.UIT.ROOT,
 		config = {
 			r = 0.1,
 			minw = 5,
